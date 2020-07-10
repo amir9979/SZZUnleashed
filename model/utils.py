@@ -8,6 +8,7 @@ from datetime import datetime
 import subprocess
 import re
 
+
 def datetime_of_commit(path, hashval=None, command=None):
     """Returns date of specific commit given a hash
     OR date of first commit result given a command"""

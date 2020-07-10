@@ -7,6 +7,7 @@ __license__ = "MIT"
 
 from sklearn.ensemble import RandomForestClassifier
 
+
 class RandomForestWrapper(RandomForestClassifier):
     """ A wrapper to enable RandomForestClassifier to be used in conjunction
     with imblearn sampling methods when using cross_validate or cross_val_score

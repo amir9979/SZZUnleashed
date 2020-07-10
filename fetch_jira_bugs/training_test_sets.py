@@ -9,6 +9,8 @@ import json
 from datetime import datetime, timedelta
 
 # TODO: give update parameter as fraction
+
+
 def build_sets(path, sgap=timedelta(days=200), gap=timedelta(days=150),
                egap=timedelta(days=150), update=timedelta(days=400),
                testdur=timedelta(days=70), traindur=timedelta(days=2000)):
@@ -91,6 +93,8 @@ def build_sets(path, sgap=timedelta(days=200), gap=timedelta(days=150),
 
 # Returns date of specific commit given a hash
 # OR date of first commit result given a command
+
+
 def datetime_of_commit(path, hash=None, command=None):
     # Check that either hash or command parameter has a value
     if hash:
@@ -109,6 +113,7 @@ def datetime_of_commit(path, hash=None, command=None):
     match = re.search('(?<=\nDate:   )[0-9-+: ]+(?=\n)', gitlog).group(0)
     date = datetime.strptime(match, '%Y-%m-%d %H:%M:%S %z')
     return date
+
 
 if __name__ == '__main__':
     build_sets('/home/kristiab/Git/jenkins')

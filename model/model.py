@@ -16,6 +16,7 @@ import numpy as np
 from random_forest_wrapper import RandomForestWrapper
 from time_sensitive_split import GitTimeSensitiveSplit
 
+
 def evaluate(path, datapath, lastcommit, config, debug):
     """ Evaluate model performance """
 
@@ -30,21 +31,25 @@ def evaluate(path, datapath, lastcommit, config, debug):
     if args['split'] == 'kfold':
         split = int(args['nfolds'])
     elif args['split'] == 'occ':
-        split = GitTimeSensitiveSplit(path=path, lastcommit=lastcommit, debug=debug)
+        split = GitTimeSensitiveSplit(
+            path=path, lastcommit=lastcommit, debug=debug)
 
     scoring = {'p': 'precision',
                'r': 'recall',
                'f1': 'f1',
-              }
+               }
 
     data = data[::-1]
     labels = labels[::-1]
-    wrap = RandomForestWrapper(sampler, n_estimators=args.getint('n_estimators'))
-    scores = cross_validate(wrap, data, labels, scoring=scoring, cv=split, return_train_score=False)
+    wrap = RandomForestWrapper(
+        sampler, n_estimators=args.getint('n_estimators'))
+    scores = cross_validate(
+        wrap, data, labels, scoring=scoring, cv=split, return_train_score=False)
     for key in sorted(scores.keys()):
         print(key + ': ' + str(scores[key]))
         print(key + ': ' + str(np.average(scores[key])) + ' ± ' +
               str(np.std(scores[key])))
+
 
 def train(datapath, sampler_arg=None, printfeats=False):
     """ Train model and save in pkl file """
@@ -60,6 +65,7 @@ def train(datapath, sampler_arg=None, printfeats=False):
             print(pair)
 
     joblib.dump(clf, 'model.pkl')
+
 
 def classify(datapath, commithash=None, index=None):
     """ Load model and classify single data point. Also determines
@@ -94,6 +100,7 @@ def classify(datapath, commithash=None, index=None):
     print('Predicted result: ' + labeltext)
     print('Top factor: ' + feature)
 
+
 def get_sampler(arg):
     """ Return sampler based on string argument """
     if arg == 'smote':
@@ -106,6 +113,7 @@ def get_sampler(arg):
         # Mixed over- and undersampling
         return SMOTETomek()
     return None
+
 
 def load_data(datapath):
     """ Load data from label and feature .csv files """
@@ -122,6 +130,7 @@ def load_data(datapath):
                            skip_header=1, usecols=0)
 
     return data, labels, hashes, names
+
 
 def main():
     """ Main method """
@@ -162,6 +171,7 @@ def main():
         train(args.datapath, args.significance)
     elif args.method == 'classify':
         classify(args.datapath, args.hash, args.index)
+
 
 if __name__ == '__main__':
     main()

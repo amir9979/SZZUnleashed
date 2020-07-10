@@ -12,6 +12,7 @@ import argparse
 import io
 import sys
 
+
 def fetch(project_issue_code, jira_project_name):
     """ Fetch issues that match given jql query """
     # Jira Query Language string which filters for resolved issues of type bug
@@ -51,16 +52,16 @@ def fetch(project_issue_code, jira_project_name):
 
     print('\nDone!')
 
+
 if __name__ == '__main__':
-
-	parser = argparse.ArgumentParser(description="""Convert a git log output to json.
+    parser = argparse.ArgumentParser(description="""Convert a git log output to json.
                                                  """)
-	parser.add_argument('--issue-code', type=str,
-        	help="The code used for the project issues on JIRA: e.g., JENKINS-1123. Only JENKINS needs to be passed as parameter.")
-	parser.add_argument('--jira-project', type=str,
-            help="The name of the Jira repository of the project.")
+    parser.add_argument('--issue-code', type=str,
+                        help="The code used for the project issues on JIRA: e.g., JENKINS-1123. Only JENKINS needs to be passed as parameter.")
+    parser.add_argument('--jira-project', type=str,
+                        help="The name of the Jira repository of the project.")
 
-	args = parser.parse_args()
-	project_issue_code = args.issue_code
-	jira_project_name = args.jira_project
-	fetch(project_issue_code, jira_project_name)
+    args = parser.parse_args()
+    project_issue_code = args.issue_code
+    jira_project_name = args.jira_project
+    fetch(project_issue_code, jira_project_name)

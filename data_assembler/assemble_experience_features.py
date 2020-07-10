@@ -16,6 +16,7 @@ from numpy import floor
 from pygit2 import Repository, GIT_SORT_TOPOLOGICAL, GIT_SORT_REVERSE
 from tqdm import tqdm
 
+
 def set_to_list(obj):
     """
     Helper function to turn sets to lists and floats to strings.
@@ -62,6 +63,7 @@ def get_diffing_files(commit, parent, repo):
         files.add((nfile.id, nfile.path, patch.delta.status))
 
     return files
+
 
 def save_experience_features_graph(repo_path, branch, graph_path):
     """
@@ -112,9 +114,11 @@ def save_experience_features_graph(repo_path, branch, graph_path):
                 'exp'] = 1 + all_authors[author][last_commit]['exp']
 
             date_current = datetime.fromtimestamp(commit.commit_time)
-            date_last = datetime.fromtimestamp(repo.get(last_commit).commit_time)
+            date_last = datetime.fromtimestamp(
+                repo.get(last_commit).commit_time)
 
-            diffing_years = abs(floor(float((date_current - date_last).days) / 365))
+            diffing_years = abs(
+                floor(float((date_current - date_last).days) / 365))
 
             overall = all_authors[author][last_commit]['rexp']
 
@@ -129,6 +133,7 @@ def save_experience_features_graph(repo_path, branch, graph_path):
 
     print("Done")
     print("Overall processing time {}".format(end_time - start_time))
+
 
 def load_experience_features_graph(path="./results/author_graph.json"):
     """

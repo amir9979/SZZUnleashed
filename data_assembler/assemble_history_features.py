@@ -13,6 +13,7 @@ from argparse import ArgumentParser
 from pygit2 import Repository, GIT_SORT_TOPOLOGICAL, GIT_SORT_REVERSE
 from tqdm import tqdm
 
+
 def set_to_list(obj):
     """
     Helper function to convert a set to a list.
@@ -20,6 +21,7 @@ def set_to_list(obj):
     if isinstance(obj, set):
         return list(obj)
     raise TypeError
+
 
 def get_files_in_tree(tree, repo):
     """
@@ -114,6 +116,7 @@ def save_history_features_graph(repo_path, branch, graph_path):
 
     print("Done")
     print("Overall processing time {}".format(end_time - start_time))
+
 
 def load_history_features_graph(path):
     """

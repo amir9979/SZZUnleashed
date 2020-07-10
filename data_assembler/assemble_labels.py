@@ -101,8 +101,7 @@ if __name__ == "__main__":
         "-r",
         type=str,
         default="../../jenkins_master/jenkins_master",
-        help=
-        "Path to a local git repository from which the pairs where extracted.")
+        help="Path to a local git repository from which the pairs where extracted.")
     PARSER.add_argument(
         "--branch",
         "-b",

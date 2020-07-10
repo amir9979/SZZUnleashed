@@ -8,10 +8,11 @@ import json
 import re
 import argparse
 
+
 def find_bug_fixes(issue_path, gitlog_path, gitlog_pattern):
     """ Identify bugfixes in Jenkins repository given a list of issues """
 
-    i = 0 # Used to display progress
+    i = 0  # Used to display progress
     no_matches = []
     matches_per_issue = {}
     total_matches = 0
@@ -28,7 +29,7 @@ def find_bug_fixes(issue_path, gitlog_path, gitlog_pattern):
             pattern = gitlog_pattern.format(nbr=nbr)
             if re.search(pattern, commit):
                 if re.search(r'#{nbr}\D'.format(nbr=nbr), commit) \
-                    and not re.search('[Ff]ix', commit):
+                        and not re.search('[Ff]ix', commit):
                     pass
                 else:
                     matches.append(commit)
@@ -41,11 +42,11 @@ def find_bug_fixes(issue_path, gitlog_path, gitlog_pattern):
                 no_matches.append(key)
             else:
                 issue_list[key]['hash'] = \
-                    re.search('(?<=^commit )[a-z0-9]+(?=\n)', \
-                    selected_commit).group(0)
+                    re.search('(?<=^commit )[a-z0-9]+(?=\n)',
+                              selected_commit).group(0)
                 issue_list[key]['commitdate'] = \
-                    re.search('(?<=\nDate:   )[0-9 -:+]+(?=\n)',\
-                    selected_commit).group(0)
+                    re.search('(?<=\nDate:   )[0-9 -:+]+(?=\n)',
+                              selected_commit).group(0)
         else:
             no_matches.append(key)
 
@@ -55,8 +56,9 @@ def find_bug_fixes(issue_path, gitlog_path, gitlog_pattern):
             print(i, end='\r')
 
     print('Total issues: ' + str(len(issue_list)))
-    print('Issues matched to a bugfix: ' + str(len(issue_list) - len(no_matches)))
-    print('Percent of issues matched to a bugfix: ' + \
+    print('Issues matched to a bugfix: ' +
+          str(len(issue_list) - len(no_matches)))
+    print('Percent of issues matched to a bugfix: ' +
           str((len(issue_list) - len(no_matches)) / len(issue_list)))
     for key in no_matches:
         issue_list.pop(key)
@@ -81,6 +83,7 @@ def build_issue_list(path):
                 issue_list[issue['key']]['resolutiondate'] = res_date
     return issue_list
 
+
 def commit_selector_heuristic(commits):
     """ Helper method for find_bug_fixes.
     Commits are assumed to be ordered in reverse chronological order.
@@ -90,6 +93,7 @@ def commit_selector_heuristic(commits):
         if not re.search('[Mm]erge|[Cc]herry|[Nn]oting', commit):
             return commit
     return commits[0]
+
 
 def main():
     """ Main method """
@@ -106,9 +110,11 @@ def main():
                         help='Pattern to match a bugfix')
     args = parser.parse_args()
 
-    issue_list = find_bug_fixes(args.issue_list, args.gitlog, args.gitlog_pattern)
+    issue_list = find_bug_fixes(
+        args.issue_list, args.gitlog, args.gitlog_pattern)
     with open('issue_list.json', 'w') as f:
         f.write(json.dumps(issue_list))
+
 
 if __name__ == '__main__':
     main()

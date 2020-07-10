@@ -8,9 +8,11 @@ import subprocess
 from datetime import datetime, timedelta
 from utils import datetime_of_commit
 
+
 class GitTimeSensitiveSplit:
     """ Time sensitive split for Git repository data based on Tan et al.'s Online
     Change Classification """
+
     def __init__(self, path, sgap=timedelta(days=331), gap=timedelta(days=73),
                  egap=timedelta(days=781), update=timedelta(days=200),
                  traindur=timedelta(days=1700), testdur=timedelta(days=400),
@@ -46,7 +48,8 @@ class GitTimeSensitiveSplit:
         command = ['git', 'rev-list', '--pretty=%ai', '--reverse', 'HEAD']
         res = subprocess.run(command, cwd=path, stdout=subprocess.PIPE)
         gitrevlist = res.stdout.decode('utf-8').split('\n')
-        self.dates = [datetime.strptime(x, '%Y-%m-%d %H:%M:%S %z') for x in gitrevlist[1::2]]
+        self.dates = [datetime.strptime(
+            x, '%Y-%m-%d %H:%M:%S %z') for x in gitrevlist[1::2]]
 
     def split(self, X, y=None, group=None):
         """ Split method used by scikit-learn's cross_validate and cross_val_score
@@ -84,7 +87,7 @@ class GitTimeSensitiveSplit:
                     n_pos += 1
 
             if self.debug:
-                print(str(len(trainset)) + ' ' + str(len(testset)) + ' ' \
+                print(str(len(trainset)) + ' ' + str(len(testset)) + ' '
                       + str(n_pos) + ' ' + str(self.dates[test_index]))
             n_pos = 0
 

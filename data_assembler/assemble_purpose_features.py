@@ -14,6 +14,7 @@ from pygit2 import Repository, GIT_SORT_TOPOLOGICAL, GIT_SORT_REVERSE
 
 PATTERNS = [r"bug", r"fix", r"defect", r"patch"]
 
+
 def is_fix(message):
     """
     Check if a message contains any of the fix patterns.
@@ -22,6 +23,7 @@ def is_fix(message):
         if re.search(pattern, message):
             return True
     return False
+
 
 def get_purpose_features(repo_path, branch):
     """
@@ -44,6 +46,7 @@ def get_purpose_features(repo_path, branch):
         feat.append(str(fix))
         features.append(feat)
     return features
+
 
 def save_features(purpose_features, path="./results/purpose_features.csv"):
     """

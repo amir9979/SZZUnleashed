@@ -19,6 +19,7 @@ from tqdm import tqdm
 
 import docker
 
+
 def start_container(client, image, name, repo_dir, result_dir):
     """
     Function that starts a docker container and links the repo into it and
@@ -55,6 +56,7 @@ def start_container(client, image, name, repo_dir, result_dir):
 
     return container
 
+
 def run_command(container, command):
     """
     Function that executes a command inside a container.
@@ -72,6 +74,7 @@ def run_analysis(t_id, container, commits):
         run_command(container,
                     "/root/scripts/analyse_commit {}".format(commit))
 
+
 def copy_repo(src, dest):
     """
     Helper function to copy a repository to another destination.
@@ -82,6 +85,7 @@ def copy_repo(src, dest):
         print("Directory not copied. Error: {}".format(exp))
     except OSError as exp:
         print("Directory not copied. Error: {}".format(exp))
+
 
 def partion_commits(commits, partitions):
     """
@@ -95,6 +99,7 @@ def partion_commits(commits, partitions):
     commits = [[commit for commit in commits[chunk[0]:chunk[1]]]
                for chunk in chunk_commits]
     return commits
+
 
 def start_analysis(image, result_dir, commits=None, cpus=cpu_count()):
     """
@@ -150,6 +155,7 @@ def start_analysis(image, result_dir, commits=None, cpus=cpu_count()):
 
     shutil.rmtree("./repos", ignore_errors=True)
 
+
 def parse_commits(commit_file):
     """
     Read the commits from a file and reutrn the content.
@@ -162,6 +168,7 @@ def parse_commits(commit_file):
     with open(commit_file, 'r') as cfile:
         commits = [line.strip() for line in cfile.readlines()]
     return commits
+
 
 def assemble_directories(result_path, cpus=cpu_count()):
     """
@@ -191,7 +198,9 @@ def assemble_directories(result_path, cpus=cpu_count()):
 
     for file_tuple in files:
         if not os.path.exists("{}/data_all/{}".format(result_path, file_tuple[1])):
-            copy_tree(file_tuple[0], "{}/data_all/{}".format(result_path, file_tuple[1]))
+            copy_tree(
+                file_tuple[0], "{}/data_all/{}".format(result_path, file_tuple[1]))
+
 
 def check_for_missing_commits(repo_path, result_path):
     """
@@ -218,6 +227,7 @@ def check_for_missing_commits(repo_path, result_path):
                 cfile.write(commit)
                 cfile.write('\n')
         print("Wrote missing commits to missing_commits.txt")
+
 
 if __name__ == "__main__":
     PARSER = ArgumentParser(description="Utility to run several docker " +
