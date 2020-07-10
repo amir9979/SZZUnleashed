@@ -71,8 +71,10 @@ def parse_code_churns(pid, repo_path, branch, start, stop=-1):
         num_files = count_files(tree, repo)
 
         # Apply relative code churns
-        measure_one = float(cloc) / total_tloc if (total_tloc > 0) else float(cloc)
-        measure_two = float(dloc) / total_tloc if (total_tloc > 0) else float(cloc)
+        measure_one = float(
+            cloc) / total_tloc if (total_tloc > 0) else float(cloc)
+        measure_two = float(
+            dloc) / total_tloc if (total_tloc > 0) else float(cloc)
         measure_three = (float(files_churned) / num_files if (num_files > 0)
                          else float(files_churned))
 
@@ -186,6 +188,7 @@ def get_code_churns(repo_path, branch):
     churns = list(reversed(churns))
     churns.append(code_churns[0])
     return churns
+
 
 def save_churns(churns, path="./results/code_churns_features_multithread.csv"):
     """

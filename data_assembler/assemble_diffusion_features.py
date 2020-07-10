@@ -30,6 +30,7 @@ def count_diffing_subsystems(subsystems):
 
     return number + len(subsystems.keys())
 
+
 def count_entropy(file_changes, total_change):
     """
     Function to count entropy for some file changes.
@@ -103,6 +104,7 @@ def parse_diffusion_features(pid, repo_path, branch, start, stop=-1):
 
     RES[pid] = features
 
+
 def parse_tree(tree, repo):
     """
     Parse a git tree and get the number of files, the number of systems and
@@ -132,6 +134,7 @@ def parse_tree(tree, repo):
                 continue
 
     return additions, file_additions, found_sub_entries
+
 
 def get_diffusion_features(repo_path, branch):
     """
@@ -208,6 +211,7 @@ def get_diffusion_features(repo_path, branch):
     features = list(reversed(features))
     features.append(diffusion_features)
     return features
+
 
 def save_diffusion_features(diffusion_features,
                             path="./results/diffusion_features.csv"):
