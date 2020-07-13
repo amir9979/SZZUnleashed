@@ -41,7 +41,8 @@ public class JSONUtil {
    * Method to save found commits to file.
    *
    * @param commits list of found commits.
-   * @param path the path to which the commits will be saved to.(Not filepath but directory)
+   * @param path    the path to which the commits will be saved to.(Not filepath
+   *                but directory)
    */
   public static void saveFoundCommits(List<Commit> commits, String path) {
     JSONObject jCommits = new JSONObject();
@@ -65,7 +66,8 @@ public class JSONUtil {
   /**
    * Save a list of bugIntroducing commits.
    *
-   * @param commits the list of pairs of commits. commits[0]=FIX, commits[1]=INTRODUCER
+   * @param commits the list of pairs of commits. commits[0]=FIX,
+   *                commits[1]=INTRODUCER
    */
   public static void saveBugIntroducingCommits(List<String[]> commits, String path) {
     JSONArray jCommits = new JSONArray();

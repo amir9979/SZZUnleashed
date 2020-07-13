@@ -53,7 +53,8 @@ public class Configuration {
   public String helpHeader = "Commandline options for the SZZ algorithm.";
   public String helpFooter = "The results will be produced in ./results";
 
-  protected Configuration() {}
+  protected Configuration() {
+  }
 
   public static Configuration getInstance() {
     if (instance == null) {
@@ -113,7 +114,8 @@ public class Configuration {
     }
 
     if (cmd.hasOption("b")) {
-      if (cmd.getOptionValue("b") == "distance") instance.setBugFinder(BugFinderFactory.DISTANCE);
+      if (cmd.getOptionValue("b") == "distance")
+        instance.setBugFinder(BugFinderFactory.DISTANCE);
     }
 
     if (cmd.hasOption("dc")) {
@@ -234,26 +236,20 @@ public class Configuration {
     cpu_option.setRequired(false);
     options.addOption(cpu_option);
 
-    Option bugFinderOption =
-        new Option("b", true, "The choice of bugfinder. Either simple or distance.");
+    Option bugFinderOption = new Option("b", true, "The choice of bugfinder. Either simple or distance.");
     bugFinderOption.setRequired(false);
     options.addOption(bugFinderOption);
 
-    Option diffCustomContextOption =
-        new Option("dc", true, "How many lines the differ adds around a diff.");
+    Option diffCustomContextOption = new Option("dc", true, "How many lines the differ adds around a diff.");
     diffCustomContextOption.setRequired(false);
     options.addOption(diffCustomContextOption);
 
-    Option partialFixPatternOption =
-        new Option(
-            "p",
-            true,
-            "Specify the pattern that should be used when maching bug fixes. Defaults to \"fix\"");
+    Option partialFixPatternOption = new Option("p", true,
+        "Specify the pattern that should be used when maching bug fixes. Defaults to \"fix\"");
     partialFixPatternOption.setRequired(false);
     options.addOption(partialFixPatternOption);
 
-    Option omitLineTextOption =
-        new Option("olt", false, "Only output the line numbers in the annotation graph.");
+    Option omitLineTextOption = new Option("olt", false, "Only output the line numbers in the annotation graph.");
     omitLineTextOption.setRequired(false);
     options.addOption(omitLineTextOption);
 

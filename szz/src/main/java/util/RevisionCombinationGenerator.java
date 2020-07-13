@@ -190,7 +190,7 @@ public class RevisionCombinationGenerator {
 
     List<String> all_commits = Stream.concat(sa.stream(), sb.stream()).collect(Collectors.toList());
 
-    boolean inRevs = false;
+    // boolean inRevs = false;
     while (hasMore()) {
       indices = getNext();
 

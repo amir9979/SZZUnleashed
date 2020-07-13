@@ -114,9 +114,11 @@ public class CommitUtil {
     for (RevCommit revc : commits) {
       Commit commit = getCommitDiffingLines(revc);
 
-      if (commit == null) continue;
+      if (commit == null)
+        continue;
 
-      if (!commit.diffWithParent.isEmpty()) parsedCommits.add(commit);
+      if (!commit.diffWithParent.isEmpty())
+        parsedCommits.add(commit);
     }
 
     return parsedCommits;
@@ -129,19 +131,15 @@ public class CommitUtil {
    * @param b revision b.
    * @return a list containing all diffs.
    */
-  public List<DiffEntry> diffRevisions(RevCommit a, RevCommit b)
-      throws IOException, GitAPIException {
-    return this.git
-        .diff()
-        .setOldTree(getCanonicalTreeParser(a))
-        .setNewTree(getCanonicalTreeParser(b))
-        .call();
+  public List<DiffEntry> diffRevisions(RevCommit a, RevCommit b) throws IOException, GitAPIException {
+    return this.git.diff().setOldTree(getCanonicalTreeParser(a)).setNewTree(getCanonicalTreeParser(b)).call();
   }
 
   /**
    * Extract a list containing all Edits that exists between two revisions.
    *
-   * @param entry a diffentry which contains information about a diff between two revisions.
+   * @param entry a diffentry which contains information about a diff between two
+   *              revisions.
    * @return an EditList containing all Edits.
    */
   public EditList getDiffEditList(DiffEntry entry) throws IOException, GitAPIException {
@@ -153,18 +151,17 @@ public class CommitUtil {
   }
 
   /**
-   * Extract filechanges between one revision and another. The resulting lines are formatted in a
-   * git diff format. Each line starts with the line number separated with added or removerd
-   * indicating if its the old or new file.
+   * Extract filechanges between one revision and another. The resulting lines are
+   * formatted in a git diff format. Each line starts with the line number
+   * separated with added or removerd indicating if its the old or new file.
    *
    * @param newTree the new revision that contains the new changes.
    * @param oldTree the old revision that contains the old changes.
-   * @param entry an DiffEntry that contains the number of changes between the newTree and the
-   *     oldTree.
+   * @param entry   an DiffEntry that contains the number of changes between the
+   *                newTree and the oldTree.
    * @return a list containing all diffing lines.
    */
-  public DiffLines diffFile(DiffEntry entry)
-      throws IOException, GitAPIException {
+  public DiffLines diffFile(DiffEntry entry) throws IOException, GitAPIException {
     EditList edits = getDiffEditList(entry);
 
     DiffingLines differ = new DiffingLines(this.repo, this.customContext);
@@ -178,17 +175,21 @@ public class CommitUtil {
    * @param revc the current revision.
    * @return a commit object containing all differences.
    */
-  public Commit getCommitDiffingLines(RevCommit revc, RevCommit... revother)
-      throws IOException, GitAPIException {
+  public Commit getCommitDiffingLines(RevCommit revc, RevCommit... revother) throws IOException, GitAPIException {
 
-    if (revc.getId() == revc.zeroId()) return null;
+    if (revc.getId() == revc.zeroId())
+      return null;
 
     RevCommit parent = null;
-    if (revother.length > 0) parent = revother[0];
-    else if (revc.getParents().length > 0) parent = revc.getParent(0);
-    else parent = revc;
+    if (revother.length > 0)
+      parent = revother[0];
+    else if (revc.getParents().length > 0)
+      parent = revc.getParent(0);
+    else
+      parent = revc;
 
-    if (parent.getId() == ObjectId.zeroId()) return null;
+    if (parent.getId() == ObjectId.zeroId())
+      return null;
 
     List<DiffEntry> diffEntries = diffRevisions(parent, revc);
 
@@ -204,8 +205,8 @@ public class CommitUtil {
   }
 
   /**
-   * Returns a revision tree parser wich could be used to compare revisions and extract revision
-   * files.
+   * Returns a revision tree parser wich could be used to compare revisions and
+   * extract revision files.
    *
    * @param commitId a unique ID for a commit in the repository.
    * @return a tree iterator that could iterate through the revision tree.
