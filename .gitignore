@@ -31,3 +31,7 @@ szz/gradle.properties
 model/data
 
 note.md
+.vscode
+.settings/
+.project
+.classpath

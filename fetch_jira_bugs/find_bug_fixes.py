@@ -19,16 +19,27 @@ def find_bug_fixes(issue_path, gitlog_path, gitlog_pattern):
 
     issue_list = build_issue_list(issue_path)
     with open(gitlog_path) as f:
-        gitlog = json.loads(f.read())
+        gitlog: [] = json.loads(f.read())
+
+    # for EACH jenkins issue
+    # tranverse ALL gitlog
+    # find ANY commit log that matches pattern(like Jenkins-IssueNum)
+    # -> one issue can have many matches
+    # THEN: use heuristic to find THE ONE commit
+    # also find commmit date & hash of THE ONE commit
+    # add date & hash to issue_list
+
+    # the thing python scripts do is find EVERY bug and their correlated ONE bug-fix
+    # result format is in issue_list.json
 
     for key in issue_list:
-        nbr = key.split('-')[1]
+        issue_num = key.split('-')[1]
         matches = []
 
         for commit in gitlog:
-            pattern = gitlog_pattern.format(nbr=nbr)
+            pattern = gitlog_pattern.format(nbr=issue_num)
             if re.search(pattern, commit):
-                if re.search(r'#{nbr}\D'.format(nbr=nbr), commit) \
+                if re.search(r'#{nbr}\D'.format(nbr=issue_num), commit) \
                         and not re.search('[Ff]ix', commit):
                     pass
                 else:
@@ -66,7 +77,7 @@ def find_bug_fixes(issue_path, gitlog_path, gitlog_pattern):
     return issue_list
 
 
-def build_issue_list(path):
+def build_issue_list(path) -> dict:
     """ Helper method for find_bug_fixes """
     issue_list = {}
     for filename in os.listdir(path):

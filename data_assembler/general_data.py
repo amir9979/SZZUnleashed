@@ -14,6 +14,7 @@ from datetime import datetime
 from numpy import median, mean
 from pygit2 import Repository
 
+
 def has_added(message):
     """
     Function to check if a message contains any word that indicates an addition of lines of code.
@@ -30,7 +31,7 @@ def has_updated(message):
     Function to check if a message contains any word that indicates an update of lines of code.
     """
     if (re.search(
-            r"update[d]*|mov(?:ing|e|ed)|refactor|modifying|switching|deprecate(?:d)*|"+
+            r"update[d]*|mov(?:ing|e|ed)|refactor|modifying|switching|deprecate(?:d)*|" +
             "clean(?:up|ed)*",
             message.lower())):
         return True
