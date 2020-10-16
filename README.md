@@ -6,7 +6,7 @@ The implementation uses "line number mappings" as proposed by Williams and Spacc
 This repository responds to the call for public SZZ implementations by Rodríguez-Pérez, Robles, and González-Barahona. ["Reproducibility and Credibility in Empirical Software Engineering: A Case Study Based on a Systematic Literature Review of the use of the SZZ Algorithm"](https://www.researchgate.net/publication/323843822_Reproducibility_and_Credibility_in_Empirical_Software_Engineering_A_Case_Study_based_on_a_Systematic_Literature_Review_of_the_use_of_the_SZZ_algorithm), *Information and Software Technology*, Volume 99, 2018.
 
 If you find SZZ Unleashed useful for your research, please cite our paper:
-- Borg, M., Svensson, O., Berg, K., & Hansson, D. (2019). SZZ Unleashed: An Open Implementation of the SZZ Algorithm - Featuring Example Usage in a Study of Just-in-Time Bug Prediction for the Jenkins Project. arXiv preprint [arXiv:1903.01742](https://arxiv.org/abs/1903.01742).
+- Borg, M., Svensson, O., Berg, K., & Hansson, D., SZZ Unleashed: An Open Implementation of the SZZ Algorithm - Featuring Example Usage in a Study of Just-in-Time Bug Prediction for the Jenkins Project. In *Proc. of the 3rd ACM SIGSOFT International Workshop on Machine Learning Techniques for Software Quality Evaluation (MaLTeSQuE)*, pp. 7-12, 2019. arXiv preprint [arXiv:1903.01742](https://arxiv.org/abs/1903.01742).
 
 # Table of Contents
 1. [Background](#background)
@@ -19,7 +19,7 @@ If you find SZZ Unleashed useful for your research, please cite our paper:
 ## Background <a name="background"></a>
 
 The SZZ algorithm is used to find bug-introducing commits from a set of bug-fixing commits. 
-The bug-introducing commits can be extracted either from a bug tracking system such as Jira or simply by searching for commits that state that they are fixing something. The identified bug-introducing commits can then be used to support empirical software engineering research, e.g., defect prediction or software quality. As an example, this implementation has been used to collect training data for a machine learning-based approach to risk classification of individual commits, i.e., training a random forest classifier to highlight commits that deserve particularily careful code review. The work is described in a MSc. thesis from Lund University (in press).
+The bug-introducing commits can be extracted either from a bug tracking system such as Jira or simply by searching for commits that state that they are fixing something. The identified bug-introducing commits can then be used to support empirical software engineering research, e.g., defect prediction or software quality. As an example, this implementation has been used to collect training data for a machine learning-based approach to risk classification of individual commits, i.e., training a random forest classifier to highlight commits that deserve particularily careful code review. The work is described in a [MSc. thesis from Lund University](https://www.lunduniversity.lu.se/lup/publication/8971266).
 
 ## Running SZZ Unleashed <a name="szz_usage"></a>
 Building and running SZZ Unleashed requires Java 8 and Gradle. Python is required to run the supporting scripts and Docker must be installed to use the provided Docker images. All scripts and compilations has been tested on Linux and Mac, and partly on Windows 10.
@@ -29,16 +29,16 @@ The figure shows a suggested workflow consisting of four steps. Step 1 and Step 
 ![SZZ Unleashed workflow](/workflow.png) <a name="workflow"></a>
 
 ### Step 1. Fetch issues (SZZ pre-step) ###
-To get issues one needs a bug tracking system. As an example the project Jenkins uses [JIRA](https://issues.jenkins-ci.org).
+To get issues one needs a bug tracking system. As an example the project Jenkins uses [Jira](https://issues.jenkins-ci.org).
 From here it is possible to fetch issues that we then can link to bug fixing commits.
 
-We have provided an example script that can be used to fetch issues from Jenkins issues (see 1 in the [figure](#workflow)). In the directory fetch_jira_bugs, one can find the **fetch.py** script. The script has a jql string which is used as a filter to get certain issues. JIRA provides a neat way to test these jql strings directly in the [web page](https://issues.jenkins-ci.org/browse/JENKINS-41020?jql=). Change to the advanced view and then enter the search criteria. Notice that the jql string is generated in the browser's url bar once enter is hit.
+We have provided an example script that can be used to fetch issues from Jenkins issues (see 1 in the [figure](#workflow)). In the directory fetch_jira_bugs, one can find the **fetch.py** script. The script has a jql string which is used as a filter to get certain issues. Jira provides a neat way to test these jql strings directly in the [web page](https://issues.jenkins-ci.org/browse/JENKINS-41020?jql=). Change to the advanced view and then enter the search criteria. Notice that the jql string is generated in the browser's url bar once enter is hit.
 
-To fetch issues from Jenkins JIRA, just run:
+To fetch issues from Jenkins Jira, just run:
 ```python
 python fetch.py --issue-code <issue_code> --jira-project <jira_project_base_url>
 ```
-passing as parameters the code used for the project issues on JIRA and the name of the JIRA repository of the project (e.g., _issues.jenkins-ci.org_). The script creates a directory with issues (see issues folder in the [figure](#workflow)). These issues will later on be used by the `find_bug_fixes.py` script. 
+passing as parameters the code used for the project issues on Jira and the name of the Jira repository of the project (e.g., _issues.jenkins-ci.org_). The script creates a directory with issues (see issues folder in the [figure](#workflow)). These issues will later on be used by the `find_bug_fixes.py` script. 
 
 A more thorough example of this script can be found [here](./examples/Fetch.md).
 
@@ -113,7 +113,7 @@ A description of how to configure SZZUnleashed further can be found in [the exam
 
 ## Use SZZ Unleashed with Docker <a name="szz_docker"></a>
 
-A more thorough instruction in using docker to produce the results can be found in [doc/Docker.md](doc/Docker.md). Below is a very brief instruction.
+A more thorough instruction in using Docker to produce the results can be found in [doc/Docker.md](doc/Docker.md). Below is a very brief instruction.
 
 There exists a *Dockerfile* in the repository. It contains all the steps in chronological order that is needed to generate the `fix_and_bug_introducing_pairs.json`. Simply run this command in the directory where the Dockerfile is located:
 
@@ -237,7 +237,7 @@ python model.py train
 
 ## Examples and executables <a name="examples_n_exec"></a>
 
-In [the examples](./examples) directory, one can find documents containing descriptions about each script. There is also [a data directory](./examples/data) where one can find data produced by the scripts. It can be used to either study how the output should look like or if anyone just want a dataset to train on.
+In [the examples](./examples) directory, one can find documents containing descriptions about each script. There is also [a data directory](./examples/data) containing data produced by the scripts. It can be used to either study how the output should look like or if anyone just wants a dataset to train on.
 
 ## Authors <a name="authors"></a>
 
