@@ -49,6 +49,11 @@ import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 import parser.Commit;
+import refdiff.core.RefDiff;
+import refdiff.core.cst.CstNode;
+import refdiff.core.diff.CstDiff;
+import refdiff.core.diff.Relationship;
+import refdiff.parsers.java.JavaPlugin;
 
 /**
  * Util to perform specific operations on commits.
@@ -157,8 +162,6 @@ public class CommitUtil {
    * git diff format. Each line starts with the line number separated with added or removerd
    * indicating if its the old or new file.
    *
-   * @param newTree the new revision that contains the new changes.
-   * @param oldTree the old revision that contains the old changes.
    * @param entry an DiffEntry that contains the number of changes between the newTree and the
    *     oldTree.
    * @return a list containing all diffing lines.
@@ -172,6 +175,13 @@ public class CommitUtil {
     return differ.getDiffingLines(entry, edits);
   }
 
+  private static void printRefactorings(String headLine, CstDiff diff) {
+    System.out.println(headLine);
+    for (Relationship rel : diff.getRefactoringRelationships()) {
+      System.out.println(rel.getStandardDescription());
+    }
+  }
+
   /**
    * Parse the lines a commit recently made changes to compared to its parent.
    *
@@ -180,6 +190,8 @@ public class CommitUtil {
    */
   public Commit getCommitDiffingLines(RevCommit revc, RevCommit... revother)
       throws IOException, GitAPIException {
+    Map<String, CstNode> beforefileToChange = null;
+    Map<String, CstNode> afterfileToChange = null;
 
     if (revc.getId() == revc.zeroId()) return null;
 
@@ -194,8 +206,55 @@ public class CommitUtil {
 
     Commit commit = new Commit(revc);
 
+    // Now, we use the plugin for Java.
+    /**
+    JavaPlugin javaPlugin = new JavaPlugin(new File("/Users/alexincerti/tmp"));
+    RefDiff refDiffJava = new RefDiff(javaPlugin);**/
+
+    /**File repo = refDiffJava.cloneGitRepository(
+            new File("/Users/alexincerti/tmp", "sonarqube"),
+            "https://github.com/SonarSource/sonarqube.git");**/
+
+    //
+
+    //CstDiff cstDiff = refDiffJava.computeDiffForCommit(repo, "a8a990b");
+    //CstDiff cstDiff = refDiffJava.computeDiffForCommit(repo, "72f61ec");
+
+
+    Configuration configuration = Configuration.getInstance();
+    boolean refactorExcluded = configuration.isRefactoringExcluded();
+    if(refactorExcluded) {
+      CstDiff refactorDiff = configuration.getRefDiff().computeDiffForCommit(configuration.getRepo(), commit.getHashString());
+
+      beforefileToChange = new HashMap<>();
+      afterfileToChange = new HashMap<>();
+      for (Relationship rel : refactorDiff.getRefactoringRelationships()) {
+        beforefileToChange.put(rel.getNodeBefore().getLocation().getFile(), rel.getNodeBefore());
+        afterfileToChange.put(rel.getNodeAfter().getLocation().getFile(), rel.getNodeAfter());
+      }
+    }
+
     for (DiffEntry entry : diffEntries) {
       DiffLines changedLines = diffFile(entry);
+
+      //TOFIX add check that issue is not talking about a test related issue
+      // or parameterize it from command line
+      /**if(entry.getNewPath().endsWith("Test.java")){
+        continue;
+      }**/
+
+      if(refactorExcluded) {
+        //Check if a refactor affects this file
+        if (beforefileToChange.containsKey(entry.getNewPath())) {
+          int line = beforefileToChange.get(entry.getNewPath()).getLocation().getLine();
+          changedLines.removeDeletionLine(line + 1);
+        }
+
+        if (afterfileToChange.containsKey(entry.getNewPath())) {
+          int line = afterfileToChange.get(entry.getNewPath()).getLocation().getLine();
+          changedLines.removeInsertionLine(line + 1);
+        }
+      }
 
       commit.diffWithParent.put(entry.getNewPath(), changedLines);
       commit.changeTypes.put(entry.getNewPath(), entry.getChangeType());

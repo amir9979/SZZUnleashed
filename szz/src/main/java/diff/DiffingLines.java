@@ -56,6 +56,8 @@ public class DiffingLines {
   public class DiffLines {
     public List<String[]> insertions = new LinkedList<>();
     public List<String[]> deletions = new LinkedList<>();
+    public Map<Integer, String[]> insertionToObject = new HashMap<>();
+    public Map<Integer, String[]> deletionToObject = new HashMap<>();
 
     /*
      * Get the lines as a JSON.
@@ -83,6 +85,16 @@ public class DiffingLines {
     public String toString() {
       return "";
     }
+
+      public void removeDeletionLine(Integer line) {
+        deletions.remove(deletionToObject.get(line));
+        deletionToObject.remove(line);
+      }
+
+      public void removeInsertionLine(Integer line) {
+          insertions.remove(insertionToObject.get(line));
+          insertionToObject.remove(line);
+      }
   }
 
   public DiffingLines(Repository repo, int customContext) {
@@ -177,7 +189,8 @@ public class DiffingLines {
                   info = new String[]{Integer.toString(firstIndex), old.getString(firstIndex)};
                 }
                 lines.insertions.add(info);
-                
+                lines.insertionToObject.put(firstIndex, info);
+
                 firstIndex+=1;
                 secondIndex+=1;
             } else if (firstIndex < first.getEndA()) {
@@ -187,6 +200,8 @@ public class DiffingLines {
                   info = new String[]{Integer.toString(firstIndex), old.getString(firstIndex)};
                 }
                 lines.deletions.add(info);
+                lines.deletionToObject.put(firstIndex, info);
+
                 firstIndex+=1;
             } else if (secondIndex < first.getEndB()) {
                 if (this.omitLineText) {
@@ -195,6 +210,7 @@ public class DiffingLines {
                   info = new String[]{Integer.toString(secondIndex), present.getString(secondIndex)};
                 }
                 lines.insertions.add(info);
+                lines.insertionToObject.put(secondIndex, info);
                 secondIndex+=1;
             }
 
