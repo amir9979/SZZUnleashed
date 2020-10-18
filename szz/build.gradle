@@ -52,7 +52,21 @@ dependencies {
         compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
         compile group: 'info.debatty', name: 'java-string-similarity', version: '1.0.1'
         compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
-        compile 'com.github.aserg-ufmg:refdiff-java:2.0.0'
+        //compile group: 'org.incava', name: 'diffj', version: '1.6.4'
+        compile('com.github.aserg-ufmg:refdiff-java:2.0.0'){
+                exclude group: 'com.github.aserg-ufmg', module: 'refdiff-core:2.0.0'
+        }
+        runtime('com.github.aserg-ufmg:refdiff-java:2.0.0'){
+                exclude group: 'com.github.aserg-ufmg', module: 'refdiff-core:2.0.0'
+        }
+        implementation('com.github.aserg-ufmg:refdiff-java:2.0.0'){
+                exclude group: 'com.github.aserg-ufmg', module: 'refdiff-core:2.0.0'
+        }
+}
+
+dependencies {
+        compile files('libs/refdiff-core:2.0.0.jar')
+        runtime files('libs/refdiff-core:2.0.0.jar')
 }
 
 task runJar(type: JavaExec) {

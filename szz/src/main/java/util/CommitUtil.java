@@ -190,8 +190,8 @@ public class CommitUtil {
    */
   public Commit getCommitDiffingLines(RevCommit revc, RevCommit... revother)
       throws IOException, GitAPIException {
-    Map<String, CstNode> beforefileToChange = null;
-    Map<String, CstNode> afterfileToChange = null;
+    Map<String, List<CstNode>> beforefileToChange = null;
+    Map<String, List<CstNode>> afterfileToChange = null;
 
     if (revc.getId() == revc.zeroId()) return null;
 
@@ -220,17 +220,35 @@ public class CommitUtil {
     //CstDiff cstDiff = refDiffJava.computeDiffForCommit(repo, "a8a990b");
     //CstDiff cstDiff = refDiffJava.computeDiffForCommit(repo, "72f61ec");
 
-
+    Set<Relationship> relationships;
     Configuration configuration = Configuration.getInstance();
     boolean refactorExcluded = configuration.isRefactoringExcluded();
     if(refactorExcluded) {
-      CstDiff refactorDiff = configuration.getRefDiff().computeDiffForCommit(configuration.getRepo(), commit.getHashString());
-
+      try {
+        CstDiff refactorDiff = configuration.getRefDiff().computeDiffForCommit(configuration.getRepo(), commit.getHashString());
+        relationships = refactorDiff.getRefactoringRelationships();
+      }catch (Exception e){
+        relationships = new HashSet();
+      }
       beforefileToChange = new HashMap<>();
       afterfileToChange = new HashMap<>();
-      for (Relationship rel : refactorDiff.getRefactoringRelationships()) {
-        beforefileToChange.put(rel.getNodeBefore().getLocation().getFile(), rel.getNodeBefore());
-        afterfileToChange.put(rel.getNodeAfter().getLocation().getFile(), rel.getNodeAfter());
+      for (Relationship rel : relationships) {
+        if(!rel.getNodeBefore().getType().equals("MethodDeclaration") &&
+                !rel.getNodeBefore().getType().equals("ClassDeclaration")){
+          System.out.println(rel.getNodeBefore().getType());
+        }
+
+        String file = rel.getNodeBefore().getLocation().getFile();
+        if(beforefileToChange.get(file) == null){
+          beforefileToChange.put(file, new ArrayList<CstNode>());
+        }
+
+        if(afterfileToChange.get(file) == null){
+          afterfileToChange.put(file, new ArrayList<CstNode>());
+        }
+
+        beforefileToChange.get(file).add(rel.getNodeBefore());
+        afterfileToChange.get(file).add(rel.getNodeAfter());
       }
     }
 
@@ -245,21 +263,25 @@ public class CommitUtil {
 
       if(refactorExcluded) {
         //Check if a refactor affects this file
-        if (beforefileToChange.containsKey(entry.getNewPath())) {
-          int line = beforefileToChange.get(entry.getNewPath()).getLocation().getLine();
-          changedLines.removeDeletionLine(line + 1);
-        }
-
-        if (afterfileToChange.containsKey(entry.getNewPath())) {
-          int line = afterfileToChange.get(entry.getNewPath()).getLocation().getLine();
-          changedLines.removeInsertionLine(line + 1);
-        }
+        removeChangedRefactoredLines(beforefileToChange, entry, changedLines);
+        removeChangedRefactoredLines(afterfileToChange, entry, changedLines);
       }
 
       commit.diffWithParent.put(entry.getNewPath(), changedLines);
       commit.changeTypes.put(entry.getNewPath(), entry.getChangeType());
     }
     return commit;
+  }
+
+  private void removeChangedRefactoredLines(Map<String, List<CstNode>> fileToRefactor, DiffEntry entry, DiffLines changedLines) {
+    if (fileToRefactor.containsKey(entry.getNewPath())) {
+      for (CstNode cstNode: fileToRefactor.get(entry.getNewPath())) {
+        int line = cstNode.getLocation().getLine();
+        for (int i = 0; i < cstNode.getLocation().getNumberOfLines(); i++) {
+          changedLines.removeDeletionLine(line + i - 1);
+        }
+      }
+    }
   }
 
   /**
