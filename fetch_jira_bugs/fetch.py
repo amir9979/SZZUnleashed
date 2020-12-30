@@ -18,9 +18,6 @@ def fetch(project_issue_code, jira_project_name):
     jql = 'project = ' + project_issue_code + ' ' \
         + 'AND issuetype = Bug '\
         + 'AND status in (Resolved, Closed) '\
-        + 'AND resolution = Fixed '\
-        + 'AND component = core '\
-        + 'AND created <= "2018-02-20 10:34" '\
         + 'ORDER BY created DESC'
     jql = quote(jql, safe='')
 
@@ -31,8 +28,7 @@ def fetch(project_issue_code, jira_project_name):
     max_results = 1000
 
     os.makedirs('issues/', exist_ok=True)
-    request = 'https://' + jira_project_name + '/rest/api/2/search?'\
-        + 'jql={}&startAt={}&maxResults={}'
+    request = 'https://issues.apache.org/jira/rest/api/2/search?jql={}&startAt={}&maxResults={}'
 
     # Do small request to establish value of 'total'
     with url.urlopen(request.format(jql, start_at, '1')) as conn:
