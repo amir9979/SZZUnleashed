@@ -25,9 +25,13 @@
 package util;
 
 import heuristics.BugFinderFactory;
+
+import java.io.File;
 import java.util.*;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
+import refdiff.core.RefDiff;
+import refdiff.parsers.java.JavaPlugin;
 
 /**
  * Global configuration file. Contains all commandline options.
@@ -52,6 +56,7 @@ public class Configuration {
 
   public String helpHeader = "Commandline options for the SZZ algorithm.";
   public String helpFooter = "The results will be produced in ./results";
+  private boolean refactorExcluded = false;
 
   protected Configuration() {}
 
@@ -92,6 +97,10 @@ public class Configuration {
       System.exit(1);
     }
 
+    if (cmd.hasOption("ref")) {
+      instance.setRefactoringExcluded(true);
+    }
+
     if (cmd.hasOption("r")) {
       instance.setRepository(cmd.getOptionValue("r"));
     } else {
@@ -129,6 +138,10 @@ public class Configuration {
     }
 
     return instance;
+  }
+
+  private void setRefactoringExcluded(Boolean ref) {
+    this.refactorExcluded = ref;
   }
 
   public String getHelpFooter() {
@@ -239,6 +252,7 @@ public class Configuration {
     bugFinderOption.setRequired(false);
     options.addOption(bugFinderOption);
 
+
     Option diffCustomContextOption =
         new Option("dc", true, "How many lines the differ adds around a diff.");
     diffCustomContextOption.setRequired(false);
@@ -257,6 +271,26 @@ public class Configuration {
     omitLineTextOption.setRequired(false);
     options.addOption(omitLineTextOption);
 
+    Option refactoringOption =
+            new Option("ref", false, "Exclude refactoring lines from the diffs");
+    omitLineTextOption.setRequired(false);
+    options.addOption(refactoringOption);
+
     return options;
+  }
+
+    public boolean isRefactoringExcluded() {
+      return refactorExcluded;
+    }
+
+  public RefDiff getRefDiff() {
+    // Now, we use the plugin for Java.
+    JavaPlugin javaPlugin = new JavaPlugin(new File("/Users/alexincerti/tmp"));
+    RefDiff refDiffJava = new RefDiff(javaPlugin);
+    return refDiffJava;
+  }
+
+  public File getRepo() {
+    return new File("/Users/alexincerti/Code/sonarqube/.git");
   }
 }
