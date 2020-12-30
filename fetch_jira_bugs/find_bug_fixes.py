@@ -106,7 +106,9 @@ def main():
                         help='Pattern to match a bugfix')
     args = parser.parse_args()
 
-    issue_list = find_bug_fixes(args.issue_list, args.gitlog, args.gitlog_pattern)
+    # issue_list = find_bug_fixes(args.issue_list, args.gitlog, args.gitlog_pattern)
+    issue_list = find_bug_fixes("/issues", "gitlog.json", "CASSANDRA-\d|cassandra-\d+.\d+")
+
     with open('issue_list.json', 'w') as f:
         f.write(json.dumps(issue_list))
 
