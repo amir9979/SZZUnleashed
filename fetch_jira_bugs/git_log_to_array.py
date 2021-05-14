@@ -9,8 +9,8 @@ import subprocess
 import sys
 import json
 
-def git_log_to_json(init_hash, path_to_repo):
-    hashes = subprocess.run(['git', 'rev-list', init_hash], cwd=path_to_repo,
+def git_log_to_json(path_to_repo):
+    hashes = subprocess.run(['git', 'rev-list', '--all'], cwd=path_to_repo,
         stdout=subprocess.PIPE).stdout.decode('ascii').split()
 
     logs = []
@@ -32,13 +32,10 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="""Convert a git log output to json.
                                                  """)
-    parser.add_argument('--from-commit', type=str,
-            help="A SHA-1 representing a commit. Runs git rev-list from this commit.")
     parser.add_argument('--repo-path', type=str,
             help="The absolute path to a local copy of the git repository from where the git log is taken.")
 
     args = parser.parse_args()
     path_to_repo = args.repo_path
-    init_hash = args.from_commit
-    git_log_to_json(init_hash, path_to_repo)
+    git_log_to_json(path_to_repo)
 
