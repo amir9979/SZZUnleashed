@@ -12,13 +12,12 @@ import time
 
 from argparse import ArgumentParser
 
-from multiprocessing import Process, Manager, cpu_count
+from multiprocessing import freeze_support, Process, Manager, cpu_count
 from pygit2 import Repository, GIT_SORT_REVERSE, GIT_SORT_TOPOLOGICAL
 from tqdm import tqdm
-
+from multiprocessing  import freeze_support
 # Global variables
-MANAGER = Manager()
-RES = MANAGER.dict()
+freeze_support()
 
 
 def parse_code_churns(pid, repo_path, branch, start, stop=-1):
@@ -132,6 +131,8 @@ def get_code_churns(repo_path, branch):
     """
     repo = Repository(repo_path)
 
+    print(repo)
+    print(repo.references)
     head = repo.references.get(branch)
 
     commits = list(
@@ -204,6 +205,9 @@ def save_churns(churns, path="./results/code_churns_features_multithread.csv"):
 
 
 if __name__ == "__main__":
+    freeze_support()
+    MANAGER = Manager()
+    RES = MANAGER.dict()
     PARSER = ArgumentParser(description="Utility to extract code churns from" +
                             " a repository or a single commit.")
 

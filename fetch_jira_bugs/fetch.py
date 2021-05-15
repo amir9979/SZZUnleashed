@@ -59,20 +59,22 @@ def export_json(respone_json, folder_output, project_name):
     except FileExistsError:
         print("Directory " , final_directory ,  " already exists")
 
-    with open(final_directory+'/'+project_name+'.json', 'a') as json_file:  
+    with open(final_directory+'/'+project_name+'.json', 'w') as json_file:  
             json.dump(respone_json, json_file)
 
 def connect_request(URL, project_name):
-    for i in range(30):
+    ans = None
+    amout = 100
+    for i in range(50):
         req_body = {
         "jql": "project = " + project_name + " AND issuetype = Bug AND status in (Resolved, Closed) AND resolution = Fixed  AND created <= '2018-05-01 10:34' ORDER BY created DESC",
-        "startAt": 100*i,
-        "maxResults": 100*(i+1),
+        "startAt": amout*i,
+        "maxResults": amout*(i+1),
         "fields": ["summary",
             "status",
             "assignee",
       "description",
-      "name",
+      "name", "resolutiondate",
       "created"]
         }
         request_url = "https://"+URL+"/rest/api/2/search"
@@ -82,7 +84,11 @@ def connect_request(URL, project_name):
             print("Connection code {}".format(str(resp.status_code)))
         else:    
             print("Connection code {}".format(str(resp.status_code)))
-            export_json(resp.json(),'issues',project_name)
+            if ans is None:
+                ans = resp.json()
+            else:
+                ans['issues'].extend(resp.json()['issues'])
+    export_json(ans,'issues',project_name)
             
             # read_json(resp.json())
 if __name__ == '__main__':
